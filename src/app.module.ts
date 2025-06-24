@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from './users/users.controller';
+import { ProductOptionsModule } from './product-options/product-options.module';
+import { CartItemsModule } from './cart_items/cart_items.module';
+import { OrderItemsModule } from './order_items/order_items.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { UsersController } from './users/users.controller';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true, //dev 환경에서만 사용
     }),
+    ProductOptionsModule,
+    CartItemsModule,
+    OrderItemsModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService],
