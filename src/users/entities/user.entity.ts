@@ -1,4 +1,5 @@
-import {Column, CreateDateColumn, Entity,PrimaryGeneratedColumn} from "typeorm";
+import { Cart } from "src/carts/entities/cart.entity";
+import {Column, CreateDateColumn, Entity,OneToOne,PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class User {
@@ -21,4 +22,7 @@ export class User {
 
     @CreateDateColumn()
     created_at: Date;
+
+    @OneToOne(() => Cart, (cart) => cart.user)
+    cart: Cart;
 }
