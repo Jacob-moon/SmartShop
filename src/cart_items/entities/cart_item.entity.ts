@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Cart } from "src/carts/entities/cart.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('cart_items')
 export class CartItem {
@@ -7,4 +8,7 @@ export class CartItem {
 
   @Column()
   quantity: number;
+
+  @ManyToOne(() => Cart,(cart) => cart.items)
+  cart: Cart;
 }
