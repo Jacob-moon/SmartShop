@@ -1,5 +1,6 @@
+import { CartItem } from "src/cart_items/entities/cart_item.entity";
 import { Product } from "src/products/entities/product.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('product_options')
 export class ProductOption {
@@ -20,4 +21,7 @@ export class ProductOption {
 
   @ManyToOne(() => Product,(product) => product.options)
   product: Product;
+
+  @OneToMany(() => CartItem, (item) => item.productOption)
+  cartItems: CartItem[];
 }
