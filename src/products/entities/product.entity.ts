@@ -1,3 +1,4 @@
+import { User } from "src/users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -27,6 +28,6 @@ export class Product {
     @CreateDateColumn()
     created_at: Date;
 
-    // @ManyToOne(() => User, (user) => user.products,{onDelete: 'CSCADE'})
-    // user:User;
+    @ManyToOne(() => User, (user) => user.products)
+    user:User;
 }
