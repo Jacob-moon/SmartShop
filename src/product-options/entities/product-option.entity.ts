@@ -1,7 +1,7 @@
 import { CartItem } from "src/cart_items/entities/cart_item.entity";
 import { OrderItem } from "src/order_items/entities/order_item.entity";
 import { Product } from "src/products/entities/product.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('product_options')
 export class ProductOption {
@@ -21,6 +21,7 @@ export class ProductOption {
   is_active: boolean;
 
   @ManyToOne(() => Product,(product) => product.options)
+  @JoinColumn()
   product: Product;
 
   @OneToMany(() => CartItem, (item) => item.productOption)

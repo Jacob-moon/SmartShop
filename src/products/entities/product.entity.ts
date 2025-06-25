@@ -1,6 +1,6 @@
 import { ProductOption } from "src/product-options/entities/product-option.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Product {
@@ -30,6 +30,7 @@ export class Product {
     created_at: Date;
 
     @ManyToOne(() => User, (user) => user.products)
+    @JoinColumn()
     user:User;
 
     @OneToMany(() => ProductOption, (option) => option.product)
