@@ -1,5 +1,6 @@
+import { ProductOption } from "src/product-options/entities/product-option.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Product {
@@ -30,4 +31,7 @@ export class Product {
 
     @ManyToOne(() => User, (user) => user.products)
     user:User;
+
+    @OneToMany(() => ProductOption, (option) => option.product)
+    options: ProductOption[];
 }
