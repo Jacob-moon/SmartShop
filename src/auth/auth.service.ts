@@ -72,12 +72,13 @@ export class AuthService {
     };
   }
 
-  async getProfile(userId: number): Promise<User> {
+  async getProfile(userId: number): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ where: { id:userId } });
     if(!user) {
       throw new UnauthorizedException(' 유저를 찾을수 없습니다. ');
     }
-    return user;
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword as UserResponseDto
   }
 
   async logout(token: string): Promise<void> {

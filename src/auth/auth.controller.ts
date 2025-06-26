@@ -29,7 +29,7 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@CurrentUser('userId') userId: number): Promise<User> {
+  async getProfile(@CurrentUser('userId') userId: number): Promise<UserResponseDto> {
     return this.authService.getProfile(userId);
   }
 
