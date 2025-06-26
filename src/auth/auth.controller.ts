@@ -6,6 +6,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { Request } from 'express';
 import { CurrentUser } from '../users/user.decorator'
 import { User } from 'src/users/entities/user.entity';
+import { UserResponseDto } from 'src/users/dto/user-response.dto';
 
 
 @Controller('auth')
@@ -14,7 +15,7 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(201)
-  async signup(@Body() createAuthDto: CreateAuthDto): Promise<User> {
+  async signup(@Body() createAuthDto: CreateAuthDto): Promise<UserResponseDto> {
     return this.authService.signup(createAuthDto);
   }
 
