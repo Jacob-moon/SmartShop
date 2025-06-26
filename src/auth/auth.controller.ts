@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Request } from 'express';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +26,15 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@Req() req: Request) {
-    return this.authService.getProfile(req.user['userId']);
+  async getProfile(@Req() req: JwtRequest): Promise<User> {
+    return this.authService.getProfile(req.user.userId);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  async logout(@Req() req: Request):Promise<void> {
+    const token = req.header.authorization.split(' ')[1];
+    await this.authService.logout(token);
   }
 }
