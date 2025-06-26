@@ -4,7 +4,9 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { Request } from 'express';
+import { CurrentUser } from '../users/user.decorator'
 import { User } from 'src/users/entities/user.entity';
+
 
 @Controller('auth')
 export class AuthController {
@@ -26,15 +28,17 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@Req() req: JwtRequest): Promise<User> {
-    return this.authService.getProfile(req.user.userId);
+  async getProfile(@CurrentUser('userId') userId: number): Promise<User> {
+    return this.authService.getProfile(userId);
   }
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  async logout(@Req() req: Request):Promise<void> {
-    const token = req.header.authorization.split(' ')[1];
+  async logout(@CurrentUser() user: { userId: number }, @Req() req: Request): Promise<void> {
+    const authHeader = req.header('authorization');
+    if (!authHeader) throw new Error('No token found');
+    const token = authHeader.split(' ')[1];
     await this.authService.logout(token);
   }
 }
