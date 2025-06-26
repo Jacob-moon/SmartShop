@@ -23,7 +23,7 @@ export class AuthController {
   @HttpCode(200)
   async login(
     @Body() LoginAuthDto: LoginAuthDto,
-  ):Promise<{ accessToken: string }> {
+  ):Promise<{ accessToken: string; user: UserResponseDto }> {
     return this.authService.login(LoginAuthDto);
   }
 

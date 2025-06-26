@@ -48,22 +48,28 @@ export class AuthService {
     }
   }
 
-  async login(loginAuthDto: LoginAuthDto):Promise<{ accessToken: string }> {
+  async login(loginAuthDto: LoginAuthDto): Promise<{ accessToken: string; user: UserResponseDto }> {
     const { email, password } = loginAuthDto;
 
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException(' 이메일이 일치하지 않습니다.')
+      throw new UnauthorizedException('이메일이 일치하지 않습니다.');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if(!isMatch) {
-      throw new UnauthorizedException(' 비밀번호가 일치하지 않습니다. ');
+    if (!isMatch) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
-    const payload:JwtPayload = { email: user.email,userId: user.id };
+
+    const payload: JwtPayload = { email: user.email, userId: user.id };
     const accessToken = this.jwtService.sign(payload);
 
-    return { accessToken };
+    const { password: _, ...userWithoutPassword } = user;
+
+    return {
+      accessToken,
+      user: userWithoutPassword,
+    };
   }
 
   async getProfile(userId: number): Promise<User> {
