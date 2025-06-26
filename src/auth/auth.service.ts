@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
+import { UserResponseDto } from 'src/users/dto/user-response.dto';
 
 interface JwtPayload {
   email: string;
@@ -23,7 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ){}
   
-  async signup(createAuthDto: CreateAuthDto):Promise<void>{
+  async signup(createAuthDto: CreateAuthDto): Promise<UserResponseDto> {
     const { email , password , name } =createAuthDto;
 
     const existing = await this.userRepository.findOne({ where : { email } });
@@ -39,7 +40,9 @@ export class AuthService {
       name,
     });
     try{
-      await this.userRepository.save(user);
+      const savedUser = await this.userRepository.save(user);
+      const { password, ...result } = savedUser;
+      return result;
     }catch (error) {
       throw new ConflictException('유저 생성에 실패 하였습니다.')
     }
