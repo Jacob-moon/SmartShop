@@ -30,5 +30,11 @@ export class UsersService {
     }
     await this.userRepository.save(user);
   }
-
+  
+  async deleteUser(id: number): Promise<void>{
+    const result = await this.userRepository.delete({ id });
+    if (result.affected === 0) {
+      throw new NotFoundException('유저를 찾을 수 없습니다.');
+    }
+  }
 }
