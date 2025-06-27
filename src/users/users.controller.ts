@@ -36,7 +36,7 @@ export class UsersController {
     return { message: '유저 정보가 수정되었습니다.' };
   }
   
-  @Delete('id')
+  @Delete(':id')
   @HttpCode(200)
   async remove(
     @Param('id') idParam :string,
