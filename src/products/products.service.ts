@@ -4,16 +4,24 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
  constructor(
   @InjectRepository(Product)
-  private readonly productRepository: Repository<Product>
+  private readonly productRepository: Repository<Product>,
+  @InjectRepository(User)
+  private readonly userRepository: Repository<User>
  ){}
 
-async createProduct(createProductDto: CreateProductDto): Promise<Product>{
-  const product = this.productRepository.create(createProductDto);
+async createProduct(createProductDto: CreateProductDto, userId: number): Promise<Product>{
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
+  const product = this.productRepository.create({
+    ...createProductDto,
+    user,
+  });
   return await this.productRepository.save(product);
 }
 

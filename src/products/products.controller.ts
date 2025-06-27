@@ -31,7 +31,7 @@ export class ProductsController {
     @Body() createProductDto: CreateProductDto,
     @CurrentUser('userId') userId:number,
   ) : Promise <{ id: number; message: string }> {
-    const product = await this.productsService.createProduct(createProductDto);
+    const product = await this.productsService.createProduct(createProductDto, userId);
     return { id: product.id, message: '상품이 등록되었습니다.' }
   }
   
