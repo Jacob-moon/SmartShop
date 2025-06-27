@@ -28,10 +28,10 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
   async create(
-    @Body() CreateProductDto: CreateProductDto,
+    @Body() createProductDto: CreateProductDto,
     @CurrentUser('userId') userId:number,
   ) : Promise <{ id: number; message: string }> {
-    const product = await this.productsService.createProduct(CreateProductDto);
+    const product = await this.productsService.createProduct(createProductDto);
     return { id: product.id, message: '상품이 등록되었습니다.' }
   }
   
