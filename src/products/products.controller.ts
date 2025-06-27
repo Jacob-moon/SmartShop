@@ -47,5 +47,15 @@ export class ProductsController {
     return { message: '상품 정보가 수정되었습니다.' }
   }
 
-  
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser('userId') userId: number,
+  ): Promise<{ message: string }> {
+    await this.productsService.deleteProduct(id);
+    return { message: '상품이 삭제되었습니다.' }
+  }
+
 }
