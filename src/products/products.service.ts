@@ -34,4 +34,11 @@ async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<voi
   Object.assign(product, updateProductDto);
   await this.productRepository.save(product);
 }
+
+async deleteProduct(id: number): Promise<void>{
+  const result = await this.productRepository.delete({ id });
+  if (result.affected === 0) {
+    throw new NotFoundException('상품을 찾을 수 없습니다.')
+  }
+}
 }
