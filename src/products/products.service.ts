@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
@@ -29,16 +29,22 @@ async getProductById(id: number): Promise<Product> {
   return product;
 }
 
-async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<void> {
+async updateProduct(id: number, updateProductDto: UpdateProductDto, userId: number): Promise<void> {
   const product = await this.getProductById(id);
+  // userId 변수가 선언되어 있지 않아서 오류가 발생합니다.
+  // updateProduct 함수의 매개변수에 userId: number를 추가해야 합니다.
+  if (product.user.id !== userId) {
+    throw new ForbiddenException('수정 권한이 없습니다.')
+  }
   Object.assign(product, updateProductDto);
   await this.productRepository.save(product);
 }
 
-async deleteProduct(id: number): Promise<void>{
-  const result = await this.productRepository.delete({ id });
-  if (result.affected === 0) {
-    throw new NotFoundException('상품을 찾을 수 없습니다.')
+async deleteProduct(id: number, userId: number): Promise<void>{
+  const product = await this.getProductById(id);
+  if(product.user.id !== userId) {
+    throw new ForbiddenException('삭제 권한이 없습니다.')
   }
+  await this.productRepository.delete({ id })
 }
 }

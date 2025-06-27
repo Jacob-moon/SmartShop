@@ -43,7 +43,7 @@ export class ProductsController {
     @Body() updateProductDto: UpdateProductDto,
     @CurrentUser('userId') userId: number,
   ): Promise<{ message: string }> {
-    await this.productsService.updateProduct(id, updateProductDto);
+    await this.productsService.updateProduct(id, updateProductDto, userId);
     return { message: '상품 정보가 수정되었습니다.' }
   }
 
@@ -54,8 +54,7 @@ export class ProductsController {
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser('userId') userId: number,
   ): Promise<{ message: string }> {
-    await this.productsService.deleteProduct(id);
+    await this.productsService.deleteProduct(id, userId);
     return { message: '상품이 삭제되었습니다.' }
   }
-
 }
