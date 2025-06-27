@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,12 +12,13 @@ export class UsersService {
     private readonly userRepository: Repository<User>
   ){}
 
-  async getUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ where : { id } });
     if (!user) {
       throw new NotFoundException('유저를 찾을 수 없습니다.');
     }
-    return user;
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword as UserResponseDto;
   }
 
   async updateUser( id: number,update: { name?:string; password?: string }, ) : Promise<void>{
