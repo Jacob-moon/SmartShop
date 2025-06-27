@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, HttpCode, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -19,6 +19,21 @@ export class UsersController {
     }
     
     return this.usersService.getUserById(id);
+  }
+
+  @Patch(':id')
+  @HttpCode(200)
+  async update(
+    @Param('id') idParam: string, 
+    @Body(new ValidationPipe({ whitelist: true, transform: true })) updateDto: UpdateUserDto,
+    @CurrentUser('userId') userId: number,
+  ) {
+    const id = Number(idParam);
+    if (id !== userId) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    await this.usersService.updateUser(id, updateDto);
+    return { message: '유저 정보가 수정되었습니다.' };
   }
   
 }
