@@ -21,8 +21,12 @@ export class UsersService {
     return userWithoutPassword as UserResponseDto;
   }
 
-  async updateUser( id: number,update: { name?:string; password?: string }, ) : Promise<void>{
-    const user = await this.getUserById(id);
+  async updateUser( id: number, update: { name?:string; password?: string }, ) : Promise<void>{
+    
+    const user = await this.userRepository.findOne({ where: { id } });
+    if(!user) {
+      throw new NotFoundException('유저를 찾을 수 업습니다.');
+    }
     if(update.name) {
       user.name = update.name;
     }
