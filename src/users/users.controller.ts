@@ -36,4 +36,17 @@ export class UsersController {
     return { message: '유저 정보가 수정되었습니다.' };
   }
   
+  @Delete('id')
+  @HttpCode(200)
+  async remove(
+    @Param('id') idParam :string,
+    @CurrentUser('userId') userId: number,
+  ) {
+    const id = Number(idParam);
+    if(id !== userId) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    await this.usersService.deleteUser(id);
+    return { message: '회원 탈퇴가 완료되었습니다.' };
+  }
 }
