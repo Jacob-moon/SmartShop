@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpCode, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CurrentUser } from 'src/users/user.decorator';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -33,5 +34,18 @@ export class ProductsController {
     const product = await this.productsService.createProduct(CreateProductDto);
     return { id: product.id, message: '상품이 등록되었습니다.' }
   }
+  
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProductDto: UpdateProductDto,
+    @CurrentUser('userId') userId: number,
+  ): Promise<{ message: string }> {
+    await this.productsService.updateProduct(id, updateProductDto);
+    return { message: '상품 정보가 수정되었습니다.' }
+  }
+
   
 }
