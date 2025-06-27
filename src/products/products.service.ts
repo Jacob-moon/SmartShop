@@ -30,9 +30,12 @@ async getAllProducts(): Promise<Product[]>{
 }
 
 async getProductById(id: number): Promise<Product> {
-  const product = await this.productRepository.findOne({ where: { id } });
+  const product = await this.productRepository.findOne({
+    where: { id },
+    relations: ['user'],
+  });
   if (!product) {
-    throw new NotFoundException()
+    throw new NotFoundException();
   }
   return product;
 }
