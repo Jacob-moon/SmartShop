@@ -81,6 +81,18 @@ export class ProductOptionsService {
      const updatedOption = await this.optionRepository.save(option);
      return new ProductOptionResponseDto(updatedOption);
   }
-
-
+  
+  async remove(id: number, userId: number): Promise<void> {
+    const option = await this.optionRepository.findOne({
+      where: { id },
+      relations: ['product', 'product.user'],
+    })
+    if(!option) {
+      throw new NotFoundException('옵션을 찾을 수 없습니다.');
+    }
+    if(option.product.user.id !== userId) {
+      throw new ForbiddenException('옵션을 삭제할 권한이 없습니다.');
+    }
+    await this.optionRepository.delete({ id });
+  }
 }
