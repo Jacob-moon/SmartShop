@@ -5,3 +5,4 @@ export class UserResponseDto {
     role: 'user' | 'admin';
     created_at: Date;
 }
+//TODO : 생성자 방식으로 변경
