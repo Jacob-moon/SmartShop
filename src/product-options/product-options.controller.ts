@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProductOptionsService } from './product-options.service';
 import { CreateProductOptionDto } from './dto/create-product-option.dto';
@@ -23,4 +23,10 @@ export class ProductOptionsController {
     return this.productOptionsService.findAll();
   }
   
+  @Get('product/:productId')
+  async getOptionsByProduct(
+    @Param('ProductId',ParseIntPipe) productId: number,
+  ): Promise<ProductOptionResponseDto[]> {
+    return this.productOptionsService.getOptionsByProduct(productId);
+  }
 }
