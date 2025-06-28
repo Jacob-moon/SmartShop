@@ -21,3 +21,4 @@ export class CreateProductOptionDto {
     @IsBoolean()
     is_active: boolean;
 }
+//TODO : productId 제거 및 create Param 으로 변경 
