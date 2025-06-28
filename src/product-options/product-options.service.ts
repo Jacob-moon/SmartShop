@@ -42,7 +42,7 @@ export class ProductOptionsService {
     return options.map(option => new ProductOptionResponseDto(option));
   }
 
-  async find(id: number): Promise<ProductOptionResponseDto> {
+  async findOne(id: number): Promise<ProductOptionResponseDto> {
     const option = await this.optionRepository.findOne({
       where: { id },
       relations: ['product'],
@@ -52,5 +52,14 @@ export class ProductOptionsService {
     }
     return new ProductOptionResponseDto(option);
   }
-  
+
+  async getOptionsByProduct(productId: number): Promise<ProductOptionResponseDto[]> {
+    const options = await this.optionRepository.find({
+      where: { product: { id: productId } },
+      relations: ['product'],
+    });
+    return options.map(option => new ProductOptionResponseDto(option));
+  }
+
+
 }
