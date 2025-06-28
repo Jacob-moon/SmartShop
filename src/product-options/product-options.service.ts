@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { ProductOption } from './entities/product-option.entity';
 import { CreateProductOptionDto } from './dto/create-product-option.dto';
 import { ProductOptionResponseDto } from './dto/product-option-response.dto';
+import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 
 @Injectable()
 export class ProductOptionsService {
@@ -59,6 +60,26 @@ export class ProductOptionsService {
       relations: ['product'],
     });
     return options.map(option => new ProductOptionResponseDto(option));
+  }
+
+  async update(
+    id: number, 
+    updateProductOptionDto: UpdateProductDto, 
+    userId: number
+  ): Promise<ProductOptionResponseDto> {
+    const option = await this.optionRepository.findOne({
+      where: { id },
+      relations: ['product', 'product.user'],
+    })
+    if(!option) {
+      throw new NotFoundException('옵션을 찾을 수 없습니다.');
+    }
+     if(option.product.user.id !== userId) {
+      throw new ForbiddenException('옵션을 수정할 권한이 없습니다.');
+     }
+     Object.assign(option, updateProductOptionDto);
+     const updatedOption = await this.optionRepository.save(option);
+     return new ProductOptionResponseDto(updatedOption);
   }
 
 
