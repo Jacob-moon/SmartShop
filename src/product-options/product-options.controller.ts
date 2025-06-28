@@ -29,4 +29,9 @@ export class ProductOptionsController {
   ): Promise<ProductOptionResponseDto[]> {
     return this.productOptionsService.getOptionsByProduct(productId);
   }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ProductOptionResponseDto> {
+    return this.productOptionsService.findOne(id);
+  }
 }
