@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
@@ -35,5 +35,22 @@ export class ProductOptionsService {
     return new ProductOptionResponseDto(savedOption);
   }
 
+  async findAll(): Promise<ProductOptionResponseDto[]> {
+    const options = await this.optionRepository.find({
+      relations: ['product'],
+    });
+    return options.map(option => new ProductOptionResponseDto(option));
+  }
+
+  async find(id: number): Promise<ProductOptionResponseDto> {
+    const option = await this.optionRepository.findOne({
+      where: { id },
+      relations: ['product'],
+    });
+    if(!option) {
+      throw new NotFoundException('옵션을 찾을 수 없습니다.');
+    }
+    return new ProductOptionResponseDto(option);
+  }
   
 }
