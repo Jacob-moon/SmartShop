@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProductOptionsService } from './product-options.service';
 import { CreateProductOptionDto } from './dto/create-product-option.dto';
@@ -18,5 +18,9 @@ export class ProductOptionsController {
     return this.productOptionsService.create(createProductOptionDto, userId);
   }
 
+  @Get()
+  async findAll(): Promise<ProductOptionResponseDto[]> {
+    return this.productOptionsService.findAll();
+  }
   
 }
