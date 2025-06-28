@@ -1,34 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProductOptionsService } from './product-options.service';
 import { CreateProductOptionDto } from './dto/create-product-option.dto';
-import { UpdateProductOptionDto } from './dto/update-product-option.dto';
+import { CurrentUser } from 'src/users/user.decorator';
+import { ProductOptionResponseDto } from './dto/product-option-response.dto';
 
 @Controller('product-options')
 export class ProductOptionsController {
   constructor(private readonly productOptionsService: ProductOptionsService) {}
 
   @Post()
-  create(@Body() createProductOptionDto: CreateProductOptionDto) {
-    return this.productOptionsService.create(createProductOptionDto);
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Body() createProductOptionDto: CreateProductOptionDto,
+    @CurrentUser('userId') userId: number,
+  ): Promise<ProductOptionResponseDto> {
+    return this.productOptionsService.create(createProductOptionDto, userId);
   }
 
-  @Get()
-  findAll() {
-    return this.productOptionsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productOptionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductOptionDto: UpdateProductOptionDto) {
-    return this.productOptionsService.update(+id, updateProductOptionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productOptionsService.remove(+id);
-  }
+  
 }
