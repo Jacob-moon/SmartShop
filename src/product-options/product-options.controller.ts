@@ -26,7 +26,7 @@ export class ProductOptionsController {
   
   @Get('product/:productId')
   async getOptionsByProduct(
-    @Param('ProductId',ParseIntPipe) productId: number,
+    @Param('productId',ParseIntPipe) productId: number,
   ): Promise<ProductOptionResponseDto[]> {
     return this.productOptionsService.getOptionsByProduct(productId);
   }
