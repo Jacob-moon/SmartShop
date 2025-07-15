@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from 'src/cart_items/entities/cart_item.entity';
+import { CreateCartItemDto } from 'src/cart_items/dto/create-cart_item.dto';
+import { ProductOption } from 'src/product-options/entities/product-option.entity';
 
 @Injectable()
 export class CartsService {
@@ -28,5 +30,25 @@ async getCartByUser(userId: number): Promise<Cart> {
     cart = await this.cartRepository.save(newCart);
   }
   return cart;
+}
+async addItem(userId: number, createCartItemDto:CreateCartItemDto): Promise<CartItem>{
+  const cart = await this.getCartByUser(userId);
+  let item = await this.cartItemRepository.findOne({
+    where: { 
+      cart: { id: cart.id }, 
+      productOption: { id:createCartItemDto.product_options_id } 
+    },
+    relations: ['cart']
+  });
+  if (item) {
+    item.quantity += createCartItemDto.quantity;
+  }else {
+    item = this.cartItemRepository.create({
+      cart: { id:cart.id },
+      productOption: { id: createCartItemDto.product_options_id },
+      quantity: createCartItemDto.quantity,
+    });
+  }
+  return this.cartItemRepository.save(item);
 }
 }
