@@ -34,4 +34,12 @@ export class CartsController {
     return this.cartsService.updateItem(userId,itemId,updateCartItemDto)
   }
  
+  @Delete('items/:id')
+  @HttpCode(200)
+  async removeItem(
+    @CurrentUser('userId') userId:number,
+    @Param('id',ParseIntPipe) itemId: number,
+  ):Promise<void>{
+    return this.cartsService.removeItem(userId,itemId);
+  }
 }
