@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from 'src/cart_items/entities/cart_item.entity';
 import { CreateCartItemDto } from 'src/cart_items/dto/create-cart_item.dto';
-import { ProductOption } from 'src/product-options/entities/product-option.entity';
 import { UpdateCartItemDto } from 'src/cart_items/dto/update-cart_item.dto';
+import { CartResponseDto } from './dto/cart-reponse.dto';
 
 @Injectable()
 export class CartsService {
@@ -21,7 +21,7 @@ export class CartsService {
   * 로직 분리 : 1.카트 있을시 userId 반환 및 카트 없을시 카드 생성 
   *           2.카트에 담을수있도록 배열생성 및 카트 저장
   */
-async getCartByUser(userId: number): Promise<Cart> {
+async getCartByUser(userId: number): Promise<CartResponseDto> {
   let cart = await this.cartRepository.findOne({
     where: { user: { id: userId } },
     relations: [
@@ -35,7 +35,18 @@ async getCartByUser(userId: number): Promise<Cart> {
     const newCart = this.cartRepository.create({ user: { id: userId }, items: [] });
     cart = await this.cartRepository.save(newCart);
   }
-  return cart;
+  return {
+    id: cart.id,
+    user_id: cart.user.id,
+    items: cart.items.map(item => ({
+      id: item.id,
+      product_options_id: item.productOption.id,
+      quantity: item.quantity,
+      product_name: item.productOption.product.name,
+      option_name: item.productOption.name,
+      price: item.productOption.product.price,
+    }))
+  };
 }
 async addItem(userId: number, createCartItemDto:CreateCartItemDto): Promise<CartItem>{
   const cart = await this.getCartByUser(userId);

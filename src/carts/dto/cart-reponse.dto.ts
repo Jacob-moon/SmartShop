@@ -1,4 +1,4 @@
-export class CartItemFlatDto {
+export class CartItemDto {
   id: number;
   product_options_id: number;
   quantity: number;
@@ -7,8 +7,8 @@ export class CartItemFlatDto {
   price: number;
 }
 
-export class CartFlatResponseDto {
+export class CartResponseDto {
   id: number;
   user_id: number;
-  items: CartItemFlatDto[];
+  items: CartItemDto[];
 }
