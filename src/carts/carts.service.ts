@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from 'src/cart_items/entities/cart_item.entity';
 import { CreateCartItemDto } from 'src/cart_items/dto/create-cart_item.dto';
 import { ProductOption } from 'src/product-options/entities/product-option.entity';
+import { UpdateCartItemDto } from 'src/cart_items/dto/update-cart_item.dto';
 
 @Injectable()
 export class CartsService {
@@ -51,4 +52,20 @@ async addItem(userId: number, createCartItemDto:CreateCartItemDto): Promise<Cart
   }
   return this.cartItemRepository.save(item);
 }
+async updateItem(
+  userId: number,
+  itemId: number,
+  updateCartItemDto:UpdateCartItemDto,
+): Promise<void> {
+  const item = await this.cartItemRepository.findOne({
+    where : { id:itemId },
+    relations: [ 'cart', 'cart.user' ]
+  });
+  if(!item) throw new NotFoundException('장바구니 아이템을 찾을 수 없습니다.');
+  if(item.cart.user.id !== userId) throw new ForbiddenException('권한이 없습니다.');
+  item.quantity = updateCartItemDto.quantity;
+  await this.cartItemRepository.save(item);
+}
+
+
 }
