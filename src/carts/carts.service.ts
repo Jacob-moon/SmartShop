@@ -66,6 +66,13 @@ async updateItem(
   item.quantity = updateCartItemDto.quantity;
   await this.cartItemRepository.save(item);
 }
-
-
+async removeItem(userId: number, ItemId: number):Promise<void>{
+  const item = await this.cartItemRepository.findOne({
+    where: { id: ItemId },
+    relations: ['carts', 'cart.user'],
+  });
+  if (!item) throw new NotFoundException('장바구니 아이템을 찾을 수 없습니다.');
+  if (item.cart.user.id !== userId) throw new ForbiddenException('권한이 없습니다.')
+    await this.cartItemRepository.delete({ id:itemId });
+  }
 }
