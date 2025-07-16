@@ -85,7 +85,7 @@ async updateItem(
 async removeItem(userId: number, itemId: number):Promise<void>{
   const item = await this.cartItemRepository.findOne({
     where: { id: itemId },
-    relations: ['carts', 'cart.user'],
+    relations: ['cart', 'cart.user'],
   });
   if (!item) throw new NotFoundException('장바구니 아이템을 찾을 수 없습니다.');
   if (item.cart.user.id !== userId) throw new ForbiddenException('권한이 없습니다.')
