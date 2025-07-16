@@ -11,7 +11,11 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
 
-  
+  /**
+   * 
+   * ToDo: 추후 비회원 추가 예정 현재 회원만 장바구니 전급가능
+   * 
+   */
   @Get()
   @UseGuards(JwtAuthGuard)
   async getCart(@CurrentUser('userId') userId:number):Promise<Cart>{
