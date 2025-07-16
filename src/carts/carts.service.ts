@@ -66,9 +66,9 @@ async updateItem(
   item.quantity = updateCartItemDto.quantity;
   await this.cartItemRepository.save(item);
 }
-async removeItem(userId: number, ItemId: number):Promise<void>{
+async removeItem(userId: number, itemId: number):Promise<void>{
   const item = await this.cartItemRepository.findOne({
-    where: { id: ItemId },
+    where: { id: itemId },
     relations: ['carts', 'cart.user'],
   });
   if (!item) throw new NotFoundException('장바구니 아이템을 찾을 수 없습니다.');
